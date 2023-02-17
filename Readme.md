@@ -107,6 +107,11 @@ When you use DISTINCT, the SELECT clause is a class, and it has a DISTINCT infix
 When you don't use DISTINCT, the SELECT clause is a function.
 
 
+## Tests
+Kotest is used to test.
+
+The test code is located in the `test` directory and includes compile tests and DSL transformation tests to ensure that the DSL builder is correctly generate DSL Expr.
+
 ## Limitations
 - Kotlin has some limitations in operator overloading.
 - Kotlin does not support the use of the > or < characters in function names.
