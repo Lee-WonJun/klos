@@ -25,7 +25,7 @@ enum class LogicalOperator: Expr  {
 
 sealed class BinaryOp : Expr {
     data class Compare(val left: Comparable, val op: CompareOperator, val right: Comparable) : BinaryOp()
-    data class Logical(val left: Compare, val op: LogicalOperator, val right: Compare) : BinaryOp()
+    data class Logical(val left: BinaryOp, val op: LogicalOperator, val right: BinaryOp) : BinaryOp()
 }
 
 sealed class WhereExpr : Expr {
