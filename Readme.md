@@ -81,8 +81,8 @@ If you don't want to use DISTINCT, you can simply omit it:
                     (col(Person::age) gt lit(10)) And
                     (col(Person::age) lt lit(20))) Or
                     (col(Person::name) `==` lit("Jane"))
+        }
     }
-}
 ```
 
 If you don't want to use DISTINCT, you can simply omit it:
