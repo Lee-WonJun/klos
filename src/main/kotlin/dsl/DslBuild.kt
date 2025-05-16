@@ -33,60 +33,85 @@ class QueryBuilder<T : Any>(private val entity: KClass<T>) {
         fun col(prop: KProperty1<T, Any>): ColumnExpr.Column<T> = ColumnExpr.Column(prop)
         fun lit(value: Any): LiteralExpr = LiteralExpr(value)
 
-        infix fun ColumnExpr.Column<T>.`==`(lit: LiteralExpr): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(this, CompareOperator.EQ, lit)
-            return binaryOp as BinaryOp.Compare
-        }
+        // 1) KProperty1 / KProperty1
+        infix fun <E : Any, T : Any> KProperty1<E, T>.`==`(other: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.EQ, ColumnExpr.Column(other))
 
-        infix fun ColumnExpr.Column<T>.`!=`(lit: LiteralExpr): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(this, CompareOperator.NEQ, lit)
-            return binaryOp as BinaryOp.Compare
-        }
+        infix fun <E : Any, T : Any> KProperty1<E, T>.ne(other: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.NEQ, ColumnExpr.Column(other))
 
-        infix fun ColumnExpr.Column<T>.`gt=`(lit: LiteralExpr): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(this, CompareOperator.GTE, lit)
-            return binaryOp as BinaryOp.Compare
-        }
+        infix fun <E : Any, T : Any> KProperty1<E, T>.gt(other: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.GT, ColumnExpr.Column(other))
 
-        infix fun ColumnExpr.Column<T>.`lt=`(lit: LiteralExpr): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(this, CompareOperator.LTE, lit)
-            return binaryOp as BinaryOp.Compare
-        }
+        infix fun <E : Any, T : Any> KProperty1<E, T>.gte(other: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.GTE, ColumnExpr.Column(other))
 
-        infix fun ColumnExpr.Column<T>.gt(lit: LiteralExpr): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(this, CompareOperator.GT, lit)
-            return binaryOp as BinaryOp.Compare
-        }
+        infix fun <E : Any, T : Any> KProperty1<E, T>.lt(other: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.LT, ColumnExpr.Column(other))
 
-        infix fun ColumnExpr.Column<T>.lt(lit: LiteralExpr): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(this, CompareOperator.LT, lit)
-            return binaryOp as BinaryOp.Compare
-        }
+        infix fun <E : Any, T : Any> KProperty1<E, T>.lte(other: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.LTE, ColumnExpr.Column(other))
 
-        infix fun LiteralExpr.`==`(col: ColumnExpr.Column<T>): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(col, CompareOperator.EQ, this)
-            return binaryOp as BinaryOp.Compare
-        }
-        infix fun LiteralExpr.`!=`(col: ColumnExpr.Column<T>): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(col, CompareOperator.NEQ, this)
-            return binaryOp as BinaryOp.Compare
-        }
-        infix fun LiteralExpr.`g=`(col: ColumnExpr.Column<T>): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(col, CompareOperator.GTE, this)
-            return binaryOp as BinaryOp.Compare
-        }
-        infix fun LiteralExpr.`l=`(col: ColumnExpr.Column<T>): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(col, CompareOperator.LTE, this)
-            return binaryOp as BinaryOp.Compare
-        }
-        infix fun LiteralExpr.gt(col: ColumnExpr.Column<T>): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(col, CompareOperator.GT, this)
-            return binaryOp as BinaryOp.Compare
-        }
-        infix fun LiteralExpr.lt(col: ColumnExpr.Column<T>): BinaryOp.Compare {
-            binaryOp = BinaryOp.Compare(col, CompareOperator.LT, this)
-            return binaryOp as BinaryOp.Compare
-        }
+
+        // 2) KProperty1 / Value
+        infix fun <E : Any, T : Any> KProperty1<E, T>.`==`(value: T): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.EQ, LiteralExpr(value))
+
+        infix fun <E : Any, T : Any> KProperty1<E, T>.ne(value: T): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.NEQ, LiteralExpr(value))
+
+        infix fun <E : Any, T : Any> KProperty1<E, T>.gt(value: T): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.GT, LiteralExpr(value))
+
+        infix fun <E : Any, T : Any> KProperty1<E, T>.gte(value: T): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.GTE, LiteralExpr(value))
+
+        infix fun <E : Any, T : Any> KProperty1<E, T>.lt(value: T): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.LT, LiteralExpr(value))
+
+        infix fun <E : Any, T : Any> KProperty1<E, T>.lte(value: T): BinaryOp.Compare =
+            BinaryOp.Compare(ColumnExpr.Column(this), CompareOperator.LTE, LiteralExpr(value))
+
+
+        // 3) Value / KProperty1
+        infix fun <E, T : Any> T.`==`(prop: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.EQ, ColumnExpr.Column(prop))
+
+        infix fun <E, T : Any> T.ne(prop: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.NEQ, ColumnExpr.Column(prop))
+
+        infix fun <E, T : Any> T.gt(prop: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.GT, ColumnExpr.Column(prop))
+
+        infix fun <E, T : Any> T.gte(prop: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.GTE, ColumnExpr.Column(prop))
+
+        infix fun <E, T : Any> T.lt(prop: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.LT, ColumnExpr.Column(prop))
+
+        infix fun <E, T : Any> T.lte(prop: KProperty1<E, T>): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.LTE, ColumnExpr.Column(prop))
+
+
+        // 4) Value / Value
+        infix fun <T : Any> T.`==`(other: T): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.EQ, LiteralExpr(other))
+
+        infix fun <T : Any> T.ne(other: T): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.NEQ, LiteralExpr(other))
+
+        infix fun <T : Any> T.gt(other: T): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.GT, LiteralExpr(other))
+
+        infix fun <T : Any> T.gte(other: T): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.GTE, LiteralExpr(other))
+
+        infix fun <T : Any> T.lt(other: T): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.LT, LiteralExpr(other))
+
+        infix fun <T : Any> T.lte(other: T): BinaryOp.Compare =
+            BinaryOp.Compare(LiteralExpr(this), CompareOperator.LTE, LiteralExpr(other))
+
 
 
         infix fun BinaryOp.Compare.And(other: BinaryOp.Compare): BinaryOp.Logical {
