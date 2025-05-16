@@ -77,10 +77,10 @@ If you don't want to use DISTINCT, you can simply omit it:
         Select Distinct (Person::class)
         From (Person::class)
         Where {
-            ((col(Person::name) `==` lit("John")) And
-                    (col(Person::age) gt lit(10)) And
-                    (col(Person::age) lt lit(20))) Or
-                    (col(Person::name) `==` lit("Jane"))
+            ((Person::name `==` "John") And
+                    (Person::age gt 10) And
+                    (Person::age lt 20)) Or
+                    (Person::name `==` "Jane")
         }
     }
 ```
@@ -92,10 +92,10 @@ If you don't want to use DISTINCT, you can simply omit it:
         Select (Person::class)
         From (Person::class)
         Where {
-            ((col(Person::name) `==` lit("John")) And
-                    (col(Person::age) gt lit(10)) And
-                    (col(Person::age) lt lit(20))) Or
-                    (col(Person::name) `==` lit("Jane"))
+            ((Person::name `==` "John") And
+                    (Person::age gt 10) And
+                    (Person::age lt 20)) Or
+                    (Person::name `==` "Jane")
         }
     }
 ```
